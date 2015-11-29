@@ -28,6 +28,8 @@ apt-get -y install build-essential debconf-utils libpcre3-dev libssl-dev
 
 # Nginx
 echo -e '\n[Nginx]'
+# remove apache2
+apt-get remove apache2
 apt-get -y install nginx
 service nginx stop
 mv /etc/nginx /etc/nginx-previous
@@ -46,7 +48,7 @@ read -p 'Do you want to create a self-signed SSL cert and configure HTTPS? [y/N]
 echo
 
 if [[ $REPLY =~ ^[Yy]$ ]]; then
-  conf1="  listen [::]:443 ssl default_server;\n  listen 443 ssl default_server;\n"
+  conf1="  listen 443 ssl default_server;\n"
   conf2="  include h5bp/directive-only/ssl.conf;\n  ssl_certificate /etc/ssl/certs/nginx.crt;\n  ssl_certificate_key /etc/ssl/private/nginx.key;"
   openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/private/nginx.key -out /etc/ssl/certs/nginx.crt
   chmod 400 /etc/ssl/private/nginx.key
@@ -57,7 +59,6 @@ else
 fi
 
 echo -e "server {
-  listen [::]:80 default_server;
   listen 80 default_server;
 $conf1
   server_name _;
