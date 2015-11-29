@@ -102,8 +102,8 @@ echo '<?php phpinfo(); ?>' > /var/www/default/public/checkinfo.php
 
 # Permissions
 echo -e '\n[Adjusting Permissions]'
-chgrp -R www-data /srv/www/*
-chmod -R g+rw /srv/www/*
-sh -c 'find /srv/www/* -type d -print0 | sudo xargs -0 chmod g+s'
+chgrp -R www-data /var/www/*
+chmod -R g+rw /var/www/*
+sh -c 'find /var/www/* -type d -print0 | sudo xargs -0 chmod g+s'
 
 exit 0
