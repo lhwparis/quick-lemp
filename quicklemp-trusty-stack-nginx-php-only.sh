@@ -85,8 +85,6 @@ $conf2
     include fastcgi_params;
   }
 
-  location / { try_files \$uri @vhost1; }
-
 }" > /etc/nginx/sites-available/vhost1
 
 mkdir -p /var/www/vhost1/app/static
