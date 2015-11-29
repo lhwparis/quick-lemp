@@ -18,7 +18,6 @@ fi
 echo -e '\n[Package Updates]'
 apt-get install software-properties-common
 apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 0xcbcb082a1bb943db
-add-apt-repository 'deb http://mirrors.syringanetworks.net/mariadb/repo/10.0/ubuntu trusty main'
 add-apt-repository ppa:nginx/stable
 apt-get update
 apt-get -y upgrade
@@ -64,7 +63,7 @@ $conf1
   server_name _;
 
 $conf2
-  root /var/www/default/public;
+  root /var/www/vhost1/public;
 
   charset utf-8;
 
@@ -75,7 +74,7 @@ $conf2
   location = /robots.txt { allow all; log_not_found off; access_log off; }
 
   location ^~ /static/ {
-    alias /var/www/default/app/static;
+    alias /var/www/vhost1/app/static;
   }
 
   location ~ \\.php\$ {
@@ -86,19 +85,19 @@ $conf2
     include fastcgi_params;
   }
 
-  location / { try_files \$uri @default; }
+  location / { try_files \$uri @vhost1; }
 
-}" > /etc/nginx/sites-available/default
+}" > /etc/nginx/sites-available/vhost1
 
-mkdir -p /var/www/default/app/static
-mkdir -p /var/www/default/app/templates
-mkdir -p /var/www/default/public
-ln -s /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
+mkdir -p /var/www/vhost1/app/static
+mkdir -p /var/www/vhost1/app/templates
+mkdir -p /var/www/vhost1/public
+ln -s /etc/nginx/sites-available/vhost1 /etc/nginx/sites-enabled/vhost1
 
 # PHP
 echo -e '\n[PHP-FPM]'
 apt-get -y install php5-common php5-mysqlnd php5-curl php5-gd php5-cli php5-fpm php-pear php5-dev php5-imap php5-mcrypt
-echo '<?php phpinfo(); ?>' > /var/www/default/public/checkinfo.php
+echo '<?php phpinfo(); ?>' > /var/www/vhost1/public/checkinfo.php
 
 # Permissions
 echo -e '\n[Adjusting Permissions]'
