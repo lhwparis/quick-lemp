@@ -1,7 +1,7 @@
 #!/bin/bash
 echo '[quick-lemp] LEMP Stack Installation'
 echo 'Configured for Ubuntu 14.04.'
-echo 'Installs Nginx, MariaDB, PHP-FPM, and uWSGI.'
+echo 'Installs Nginx, PHP-FPM.'
 echo
 read -p 'Do you want to continue? [y/N] ' -n 1 -r
 echo
@@ -25,7 +25,7 @@ apt-get -y upgrade
 
 # Depencies and pip
 echo -e '\n[Dependencies]'
-apt-get -y install build-essential debconf-utils python-dev libpcre3-dev libssl-dev python-pip
+apt-get -y install build-essential debconf-utils libpcre3-dev libssl-dev
 
 # Nginx
 echo -e '\n[Nginx]'
@@ -64,7 +64,7 @@ $conf1
   server_name _;
 
 $conf2
-  root /srv/www/lempsample/public;
+  root /var/www/default/public;
 
   charset utf-8;
 
@@ -75,7 +75,7 @@ $conf2
   location = /robots.txt { allow all; log_not_found off; access_log off; }
 
   location ^~ /static/ {
-    alias /srv/www/lempsample/app/static;
+    alias /var/www/default/app/static;
   }
 
   location ~ \\.php\$ {
@@ -86,80 +86,24 @@ $conf2
     include fastcgi_params;
   }
 
-  location / { try_files \$uri @lempsample; }
+  location / { try_files \$uri @default; }
 
-  location @lempsample {
-    include uwsgi_params;
-    uwsgi_pass unix:/tmp/lempsample.sock;
-  }
-}" > /etc/nginx/sites-available/lempsample
+}" > /etc/nginx/sites-available/default
 
-mkdir -p /srv/www/lempsample/app/static
-mkdir -p /srv/www/lempsample/app/templates
-mkdir -p /srv/www/lempsample/public
-ln -s /etc/nginx/sites-available/lempsample /etc/nginx/sites-enabled/lempsample
+mkdir -p /var/www/default/app/static
+mkdir -p /var/www/default/app/templates
+mkdir -p /var/www/default/public
+ln -s /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
 
 # PHP
 echo -e '\n[PHP-FPM]'
 apt-get -y install php5-common php5-mysqlnd php5-curl php5-gd php5-cli php5-fpm php-pear php5-dev php5-imap php5-mcrypt
-echo '<?php phpinfo(); ?>' > /srv/www/lempsample/public/checkinfo.php
-
-
-# uWSGI
-echo -e '\n[uWSGI]'
-pip install uwsgi
-mkdir /etc/uwsgi
-mkdir /var/log/uwsgi
-echo 'description "uWSGI Emperor"
-start on runlevel [2345]
-stop on runlevel [06]
-exec uwsgi --die-on-term --emperor /etc/uwsgi --logto /var/log/uwsgi/uwsgi.log' > /etc/init/uwsgi-emperor.conf
-echo '[uwsgi]
-chdir = /srv/www/lempsample
-logto = /var/log/uwsgi/lempsample.log
-virtualenv = /srv/www/lempsample/venv
-socket = /tmp/lempsample.sock
-uid = www-data
-gid = www-data
-master = true
-wsgi-file = wsgi.py
-callable = app
-vacuum = true' > /etc/uwsgi/lempsample.ini
-tee -a /srv/www/lempsample/wsgi.py > /dev/null <<EOF
-from flask import Flask
-
-app = Flask(__name__)
-from flask import render_template
-
-@app.route('/')
-def index():
-    return "<html><head><link href='https://fonts.googleapis.com/css?family=Noto+Sans' rel='stylesheet' type='text/css'></head><body class='container' style=\"font-family: 'Noto Sans', sans-serif;\"><blockquote><h1>You've got a LEMP stack!!</h1><p>The Python app using uWSGI works! <a href='checkinfo.php'>Try out the PHP page.</a></p><footer><a href='https://github.com/jbradach'>@jbradach</a></footer></blockquote></body></html>"
-EOF
-
-# virtualenv
-echo -e '\n[virtualenv]'
-pip install virtualenv
-cd /srv/www/lempsample
-virtualenv venv
-source venv/bin/activate
-pip install flask
-deactivate
+echo '<?php phpinfo(); ?>' > /var/www/default/public/checkinfo.php
 
 # Permissions
 echo -e '\n[Adjusting Permissions]'
 chgrp -R www-data /srv/www/*
 chmod -R g+rw /srv/www/*
 sh -c 'find /srv/www/* -type d -print0 | sudo xargs -0 chmod g+s'
-
-# MariaDB
-echo -e '\n[MariaDB]'
-export DEBIAN_FRONTEND=noninteractive
-apt-get -q -y install mariadb-server
-echo
-start uwsgi-emperor
-service nginx restart
-service php5-fpm restart
-echo
-echo '[quick-lemp] LEMP Stack Installation Complete'
 
 exit 0
