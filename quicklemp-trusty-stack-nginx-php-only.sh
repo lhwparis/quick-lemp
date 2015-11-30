@@ -24,7 +24,7 @@ apt-get -y upgrade
 
 # Depencies and pip
 echo -e '\n[Dependencies]'
-apt-get -y install build-essential debconf-utils libpcre3-dev libssl-dev
+apt-get -y install build-essential debconf-utils libpcre3-dev libssl-dev curl
 
 # Nginx
 echo -e '\n[Nginx]'
