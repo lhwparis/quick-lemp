@@ -24,6 +24,8 @@ apt-get -y upgrade
 
 # Depencies and pip
 echo -e '\n[Dependencies]'
+sudo update-rc.d apache2 disable
+apt-get -y remove apache2 mysql
 apt-get -y install build-essential debconf-utils libpcre3-dev libssl-dev curl
 
 # Nginx
