@@ -98,6 +98,7 @@ ln -s /etc/nginx/sites-available/vhost1 /etc/nginx/sites-enabled/vhost1
 # PHP
 echo -e '\n[PHP-FPM]'
 apt-get -y install php5-common php5-mysqlnd php5-curl php5-gd php5-cli php5-fpm php-pear php5-dev php5-imap php5-mcrypt
+php5enmod mcrypt
 echo '<?php phpinfo(); ?>' > /var/www/vhost1/public/checkinfo.php
 
 # Permissions
