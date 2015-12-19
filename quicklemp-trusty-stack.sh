@@ -109,4 +109,11 @@ chgrp -R www-data /var/www/*
 chmod -R g+rw /var/www/*
 sh -c 'find /var/www/* -type d -print0 | sudo xargs -0 chmod g+s'
 
+# MariaDB
+echo -e '\n[MariaDB]'
+export DEBIAN_FRONTEND=noninteractive
+apt-get -q -y install mariadb-server
+echo
+start uwsgi-emperor
+
 exit 0
