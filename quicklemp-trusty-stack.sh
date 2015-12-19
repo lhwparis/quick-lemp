@@ -14,6 +14,8 @@ if [[ $EUID -ne 0 ]]; then
    exit 1
 fi
 
+
+
 # Update packages and add MariaDB repository
 echo -e '\n[Package Updates]'
 apt-get install software-properties-common
@@ -23,18 +25,19 @@ add-apt-repository ppa:nginx/stable
 apt-get install -y language-pack-en-base
 LC_ALL=en_US.UTF-8 add-apt-repository ppa:ondrej/php-7.0
 apt-get update
-apt-get -y upgrade
 
 # Depencies and pip
 echo -e '\n[Dependencies]'
 sudo update-rc.d apache2 disable
-apt-get -y remove apache2 mysql
+apt-get -y remove apache2 mysql php5 php5-fpm
 apt-get -y install build-essential debconf-utils libpcre3-dev libssl-dev curl
+
+apt-get update
+apt-get -y upgrade
 
 # Nginx
 echo -e '\n[Nginx]'
 # remove apache2
-apt-get remove apache2
 apt-get -y install nginx
 service nginx stop
 mv /etc/nginx /etc/nginx-previous
@@ -100,8 +103,7 @@ ln -s /etc/nginx/sites-available/vhost1 /etc/nginx/sites-enabled/vhost1
 
 # PHP
 echo -e '\n[PHP-FPM]'
-apt-get -y install php7.0-common php7.0-mysql php7-0-curl php7.0-gd php7.0-cli php7.0-fpm php-pear php7.0-imap php7.0-mcrypt
-php5enmod mcrypt
+apt-get -y install php7.0-fpm php7.0-common php7.0-mysql php7-0-curl php7.0-gd php7.0-cli php-pear php7.0-imap php7.0-mcrypt php7.0-opcache php7.0-json
 echo '<?php phpinfo(); ?>' > /var/www/vhost1/public/checkinfo.php
 
 # Permissions
