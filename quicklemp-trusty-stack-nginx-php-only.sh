@@ -19,6 +19,8 @@ echo -e '\n[Package Updates]'
 apt-get install software-properties-common
 apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 0xcbcb082a1bb943db
 add-apt-repository ppa:nginx/stable
+apt-get install -y language-pack-en-base
+LC_ALL=en_US.UTF-8 add-apt-repository ppa:ondrej/php-7.0
 apt-get update
 apt-get -y upgrade
 
@@ -82,7 +84,7 @@ $conf2
 
   location ~ \\.php\$ {
     try_files \$uri =404;
-    fastcgi_pass unix:/var/run/php5-fpm.sock;
+    fastcgi_pass unix:/var/run/php/php7.0-fpm.sock;
     fastcgi_param SCRIPT_FILENAME \$request_filename;
     fastcgi_index index.php;
     include fastcgi_params;
@@ -97,7 +99,7 @@ ln -s /etc/nginx/sites-available/vhost1 /etc/nginx/sites-enabled/vhost1
 
 # PHP
 echo -e '\n[PHP-FPM]'
-apt-get -y install php5-common php5-mysqlnd php5-curl php5-gd php5-cli php5-fpm php-pear php5-dev php5-imap php5-mcrypt
+apt-get -y install php7.0-common php7.0-mysql php7-0-curl php7.0-gd php7.0-cli php7.0-fpm php-pear php7.0-imap php7.0-mcrypt
 php5enmod mcrypt
 echo '<?php phpinfo(); ?>' > /var/www/vhost1/public/checkinfo.php
 
