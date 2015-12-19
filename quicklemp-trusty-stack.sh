@@ -120,5 +120,7 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
   export DEBIAN_FRONTEND=noninteractive
   apt-get -q -y install mariadb-server php7.0-mysql
 fi
-
+echo
+service nginx restart
+echo
 exit 0
