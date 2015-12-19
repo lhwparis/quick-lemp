@@ -1,7 +1,7 @@
 #!/bin/bash
 echo '[quick-lemp] LEMP Stack Installation'
 echo 'Configured for Ubuntu 14.04.'
-echo 'Installs Nginx, PHP-FPM.'
+echo 'Installs Nginx, PHP7-FPM, MariaDB.'
 echo
 read -p 'Do you want to continue? [y/N] ' -n 1 -r
 echo
