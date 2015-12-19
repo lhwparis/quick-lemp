@@ -101,7 +101,7 @@ ln -s /etc/nginx/sites-available/vhost1 /etc/nginx/sites-enabled/vhost1
 
 # PHP
 echo -e '\n[PHP-FPM]'
-apt-get -q -y install php7.0-fpm php7.0-common php7-0-curl php7.0-gd php7.0-cli php-pear php7.0-imap php7.0-mcrypt php7.0-opcache php7.0-json
+apt-get -q -y install php7.0-fpm php7.0-common php7.0-curl php7.0-gd php7.0-cli php-pear php7.0-imap php7.0-mcrypt php7.0-opcache php7.0-json
 echo '<?php phpinfo(); ?>' > /var/www/vhost1/public/checkinfo.php
 
 # Permissions
