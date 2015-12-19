@@ -113,10 +113,14 @@ chmod -R g+rw /var/www/*
 sh -c 'find /var/www/* -type d -print0 | sudo xargs -0 chmod g+s'
 
 # MariaDB
-echo -e '\n[MariaDB]'
-export DEBIAN_FRONTEND=noninteractive
-apt-get -q -y install mariadb-server
+
 echo
-start uwsgi-emperor
+read -p 'Do you want to install MariaDb? [y/N] ' -n 1 -r
+echo
+if [[ $REPLY =~ ^[Yy]$ ]]; then
+  echo -e '\n[MariaDB]'
+  export DEBIAN_FRONTEND=noninteractive
+  apt-get -q -y install mariadb-server
+fi
 
 exit 0
