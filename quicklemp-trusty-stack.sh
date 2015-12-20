@@ -75,15 +75,12 @@ $conf2
   root /var/www/vhost1/public;
 
   charset utf-8;
-
   error_page 404 /404.html;
-
   location = /favicon.ico { log_not_found off; access_log off; }
-
   location = /robots.txt { allow all; log_not_found off; access_log off; }
 
   location ^~ /static/ {
-    alias /var/www/vhost1/app/static;
+    alias /var/www/vhost1/static;
   }
 
   location ~ \\.php\$ {
@@ -97,6 +94,7 @@ $conf2
 }" > /etc/nginx/sites-available/vhost1
 
 mkdir -p /var/www/vhost1/public
+mkdir -p /var/www/vhost1/static
 ln -s /etc/nginx/sites-available/vhost1 /etc/nginx/sites-enabled/vhost1
 
 # PHP
@@ -119,6 +117,28 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
   echo -e '\n[MariaDB]'
   export DEBIAN_FRONTEND=noninteractive
   apt-get -q -y install mariadb-server php7.0-mysql
+  
+  mkdir -p /usr/share/adminer
+  chown -R www-data:www-data /usr/share/adminer
+  wget http://www.adminer.org/latest.php -O /usr/share/adminer/index.php
+  
+echo -e "server {
+  listen localhost:8005;
+  server_name  localhost;
+  server_name adminer;
+  root   /usr/share/adminer;
+  charset utf-8;
+  location / {
+    index index.php;
+    try_files $uri $uri/ /index.php?$args;
+    fastcgi_pass unix:/var/run/php/php7.0-fpm.sock;
+    fastcgi_param SCRIPT_FILENAME \$request_filename;
+    fastcgi_index index.php;
+    include fastcgi_params;
+  }
+}" > /etc/nginx/sites-available/adminer
+ln -s /etc/nginx/sites-available/adminer /etc/nginx/sites-enabled/adminer
+  
 fi
 echo
 service nginx restart
