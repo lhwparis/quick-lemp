@@ -123,16 +123,14 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
   wget http://www.adminer.org/latest.php -O /usr/share/adminer/index.php
   
 echo -e "server {
-  listen localhost:8005;
-  server_name  localhost;
+  listen 8005;
   server_name adminer;
   root   /usr/share/adminer;
   charset utf-8;
   location / {
-    index index.php;
-    try_files $uri $uri/ /index.php?$args;
+    try_files $uri =404;
     fastcgi_pass unix:/var/run/php/php7.0-fpm.sock;
-    fastcgi_param SCRIPT_FILENAME \$request_filename;
+    fastcgi_param SCRIPT_FILENAME $request_filename;
     fastcgi_index index.php;
     include fastcgi_params;
   }
