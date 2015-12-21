@@ -78,6 +78,7 @@ $conf2
   error_page 404 /404.html;
   location = /favicon.ico { log_not_found off; access_log off; }
   location = /robots.txt { allow all; log_not_found off; access_log off; }
+  client_max_body_size 20M;
 
   location ^~ /static/ {
     alias /var/www/vhost1/static;
@@ -127,6 +128,7 @@ echo -e "server {
   server_name adminer;
   root   /usr/share/adminer;
   charset utf-8;
+  client_max_body_size 50M;
   location / {
     try_files $uri =404;
     fastcgi_pass unix:/var/run/php/php7.0-fpm.sock;
