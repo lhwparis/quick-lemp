@@ -24,6 +24,7 @@ add-apt-repository 'deb http://mirrors.syringanetworks.net/mariadb/repo/10.1/ubu
 add-apt-repository ppa:nginx/stable
 apt-get install -y language-pack-en-base
 LC_ALL=en_US.UTF-8 add-apt-repository ppa:ondrej/php-7.0
+LC_ALL=en_US.UTF-8 add-apt-repository ppa:ondrej/php5-5.6
 apt-get update
 
 # Depencies and pip
@@ -72,7 +73,7 @@ $conf1
   server_name _;
 
 $conf2
-  root /var/www/vhost1/public;
+  root /var/www/vhosts/default/public;
 
   charset utf-8;
   error_page 404 /404.html;
@@ -81,7 +82,7 @@ $conf2
   client_max_body_size 20M;
 
   location ^~ /static/ {
-    alias /var/www/vhost1/static;
+    alias /var/www/vhosts/default/static;
   }
 
   location ~ \\.php\$ {
@@ -92,16 +93,31 @@ $conf2
     include fastcgi_params;
   }
 
-}" > /etc/nginx/sites-available/vhost1
+}" > /etc/nginx/sites-available/default
 
-mkdir -p /var/www/vhost1/public
-mkdir -p /var/www/vhost1/static
-ln -s /etc/nginx/sites-available/vhost1 /etc/nginx/sites-enabled/vhost1
+mkdir -p /var/www/vhosts/default/public
+mkdir -p /var/www/vhosts/default/static
+ln -s /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
 
-# PHP
-echo -e '\n[PHP-FPM]'
+mariaDbPHP7=
+mariaDbPHP5=
+phpVersionInstalled=
+
+# PHP 7.x
 apt-get -q -y install php7.0-fpm php7.0-common php7.0-curl php7.0-gd php7.0-cli php-pear php7.0-imap php7.0-mcrypt php7.0-opcache php7.0-json
-echo '<?php phpinfo(); ?>' > /var/www/vhost1/public/checkinfo.php
+echo '<?php phpinfo(); ?>' > /var/www/vhosts/default/public/checkinfo.php
+
+# PHP 5.6.x
+echo
+read -p 'Do you want to install PHP5.6 in addition to PHP7.0 [y/N] ' -n 1 -r
+echo
+if [[ $REPLY =~ ^[Yy]$ ]]; then
+apt-get -q -y install php5-fpm php5-common php5-curl php5-gd php5-cli php-pear php5-imap php5-mcrypt php5-opcache php5-json
+mariaDbPHP5= " php5-mysql"
+phpVersionInstalled= "php5"
+echo '<?php phpinfo(); ?>' > /var/www/vhosts/default/public/checkinfo.php
+fi
+echo
 
 # Permissions
 echo -e '\n[Adjusting Permissions]'
@@ -117,7 +133,7 @@ echo
 if [[ $REPLY =~ ^[Yy]$ ]]; then
   echo -e '\n[MariaDB]'
   export DEBIAN_FRONTEND=noninteractive
-  apt-get -q -y install mariadb-server php7.0-mysql
+  apt-get -q -y install mariadb-server php7.0-mysql $mariaDbPHP5
   
   mkdir -p /usr/share/adminer
   chown -R www-data:www-data /usr/share/adminer
@@ -132,6 +148,7 @@ echo -e "server {
   location / {
     try_files $uri =404;
     fastcgi_pass unix:/var/run/php/php7.0-fpm.sock;
+    fastcgi_read_timeout 300;
     fastcgi_param SCRIPT_FILENAME $request_filename;
     fastcgi_index index.php;
     include fastcgi_params;
