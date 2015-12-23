@@ -44,7 +44,7 @@ mv /etc/nginx /etc/nginx-previous
 curl -L https://github.com/h5bp/server-configs-nginx/archive/1.0.0.tar.gz | tar -xz
 # Newer: https://github.com/h5bp/server-configs-nginx/archive/master.zip
 mv server-configs-nginx-1.0.0 /etc/nginx
-cp /etc/nginx-previous/uwsgi_params /etc/nginx-previous/fastcgi_params /etc/nginx
+cp /etc/nginx-previous/fastcgi_params /etc/nginx
 sed -i.bak -e
 sed -i.bak -e "s/www www/www-data www-data/" \
   -e "s/logs\/error.log/\/var\/log\/nginx\/error.log/" \
