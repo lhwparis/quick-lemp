@@ -103,7 +103,7 @@ mariaDbPHP5=
 phpVersionInstalled=
 
 # PHP 7.x
-apt-get -q -y install php7.0-fpm php7.0-common php7.0-curl php7.0-gd php7.0-cli php-pear php7.0-imap php7.0-mcrypt php7.0-opcache php7.0-json
+apt-get -q -y install php7.0-fpm php7.0-common php7.0-curl php7.0-gd php7.0-cli php-pear php7.0-imap php7.0-mcrypt php7.0-opcache php7.0-json php7.0-mbstring
 echo '<?php phpinfo(); ?>' > /var/www/vhosts/default/public/checkinfo.php
 
 # PHP 5.6.x
