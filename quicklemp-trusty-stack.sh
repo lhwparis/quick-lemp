@@ -23,8 +23,7 @@ apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 0xcbcb082a1bb9
 add-apt-repository 'deb http://mirrors.syringanetworks.net/mariadb/repo/10.1/ubuntu trusty main'
 add-apt-repository ppa:nginx/stable
 apt-get install -y language-pack-en-base
-LC_ALL=en_US.UTF-8 add-apt-repository ppa:ondrej/php-7.0
-LC_ALL=en_US.UTF-8 add-apt-repository ppa:ondrej/php5-5.6
+LC_ALL=en_US.UTF-8 add-apt-repository ppa:ondrej/php
 apt-get update
 
 # Depencies and pip
