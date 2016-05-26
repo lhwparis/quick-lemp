@@ -20,10 +20,10 @@ fi
 echo -e '\n[Package Updates]'
 apt-get install software-properties-common
 apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 0xcbcb082a1bb943db
-add-apt-repository 'deb http://mirrors.syringanetworks.net/mariadb/repo/10.1/ubuntu trusty main'
+add-apt-repository 'deb http://mirrors.syringanetworks.net/mariadb/repo/10.1/ubuntu xenial main'
 add-apt-repository ppa:nginx/stable
 apt-get install -y language-pack-en-base
-LC_ALL=en_US.UTF-8 add-apt-repository ppa:ondrej/php
+  LC_ALL=en_US.UTF-8 add-apt-repository ppa:ondrej/php
 apt-get update
 
 # Depencies and pip
@@ -111,8 +111,8 @@ echo
 read -p 'Do you want to install PHP5.6 in addition to PHP7.0 (not working on ubuntu 16.04) [y/N] ' -n 1 -r
 echo
 if [[ $REPLY =~ ^[Yy]$ ]]; then
-apt-get -q -y install php5-fpm php5-common php5-curl php5-gd php5-cli php-pear php5-imap php5-mcrypt php5-opcache php5-json
-mariaDbPHP5= " php5-mysql"
+apt-get -q -y install php5.6-fpm php5.6-common php5.6-curl php5.6-gd php5.6-cli php-pear php5.6-imap php5.6-mcrypt php5.6-opcache php5.6-json
+mariaDbPHP5= " php5.6-mysql"
 phpVersionInstalled= "php5"
 echo '<?php phpinfo(); ?>' > /var/www/vhosts/default/public/checkinfo.php
 fi
