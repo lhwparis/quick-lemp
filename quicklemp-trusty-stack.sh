@@ -108,7 +108,7 @@ echo '<?php phpinfo(); ?>' > /var/www/vhosts/default/public/checkinfo.php
 
 # PHP 5.6.x
 echo
-read -p 'Do you want to install PHP5.6 in addition to PHP7.0 [y/N] ' -n 1 -r
+read -p 'Do you want to install PHP5.6 in addition to PHP7.0 (not working on ubuntu 16.04) [y/N] ' -n 1 -r
 echo
 if [[ $REPLY =~ ^[Yy]$ ]]; then
 apt-get -q -y install php5-fpm php5-common php5-curl php5-gd php5-cli php-pear php5-imap php5-mcrypt php5-opcache php5-json
@@ -145,10 +145,10 @@ echo -e "server {
   charset utf-8;
   client_max_body_size 50M;
   location / {
-    try_files $uri =404;
+    try_files \$uri =404;
     fastcgi_pass unix:/var/run/php/php7.0-fpm.sock;
     fastcgi_read_timeout 300;
-    fastcgi_param SCRIPT_FILENAME $request_filename;
+    fastcgi_param SCRIPT_FILENAME \$request_filename;
     fastcgi_index index.php;
     include fastcgi_params;
   }
